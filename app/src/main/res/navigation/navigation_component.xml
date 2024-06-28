@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_component"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.LoginFragment"
+        tools:layout="@layout/fragment_login"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.RegisterFragment"
+        tools:layout="@layout/fragment_register"
+        android:label="RegisterFragment" >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_sellerAccountFragment"
+            app:destination="@id/sellerAccountFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_buyerAccountFragment"
+            app:destination="@id/buyerAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/buyerAccountFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.BuyerAccountFragment"
+        android:label="fragment_accountragment"
+        tools:layout="@layout/fragment_buyer_account" >
+        <action
+            android:id="@+id/action_buyerAccountFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.TransactionFragment"
+        android:label="fragment_transaction"
+        tools:layout="@layout/fragment_transaction" />
+    <fragment
+        android:id="@+id/wishlistFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.WishlistFragment"
+        android:label="fragment_wishlist"
+        tools:layout="@layout/fragment_wishlist" />
+    <fragment
+        android:id="@+id/sellerAccountFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.SellerAccountFragment"
+        android:label="fragment_seller_account"
+        tools:layout="@layout/fragment_seller_account" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.sleepydev.bookvibe.view.fragment.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
+</navigation>

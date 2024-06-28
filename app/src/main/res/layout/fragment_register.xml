@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+   >
+
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="70dp"
+        android:src="@drawable/ic_back"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/batasRegister"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="30dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Register"
+        android:textColor="@color/blue"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/batasRegister"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_name"
+                android:layout_gravity="center_horizontal"
+                app:helperTextTextColor="@color/red"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/regist_name"
+                    android:hint="Full Name"
+                    android:layout_marginHorizontal="60dp"
+                    android:textSize="15sp"
+                    android:background="@drawable/rectangle_edit_text"
+                    android:fontFamily="@font/poppins"
+
+                    android:drawableTint="@color/cardview_dark_background"
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:inputType="textEmailAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_email"
+                android:layout_gravity="center_horizontal"
+                app:helperTextTextColor="@color/red"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/regis_email"
+                    android:hint="Email (Ex: johndee@gmail.com)"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins"
+                    android:layout_marginHorizontal="60dp"
+                    android:background="@drawable/rectangle_edit_text"
+
+                    android:drawableTint="@color/cardview_dark_background"
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:inputType="textEmailAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_pass"
+                android:layout_gravity="center_horizontal"
+                app:helperTextTextColor="@color/red"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/regis_password"
+                    android:hint="Password"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins"
+                    app:passwordToggleEnabled="true"
+                    android:layout_marginHorizontal="60dp"
+                    android:background="@drawable/rectangle_edit_text"
+
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:inputType="textPassword|textNoSuggestions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_confirm_pass"
+                android:layout_gravity="center_horizontal"
+                app:helperTextTextColor="@color/red"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/confirm_password"
+                    android:hint="Confirm Password"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins"
+                    app:passwordToggleEnabled="true"
+                    android:layout_marginHorizontal="60dp"
+                    android:background="@drawable/rectangle_edit_text"
+
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:inputType="textPassword|textNoSuggestions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/account_type"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                app:helperTextTextColor="@color/red"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="60dp">
+
+                <AutoCompleteTextView
+
+                    android:fontFamily="@font/poppins"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:id="@+id/dropdown_account_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_edit_text"
+                    android:singleLine="false"
+                    android:textSize="15dp">
+
+                </AutoCompleteTextView>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_regist"
+                android:text="Register"
+                android:background="@drawable/rounded_button"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="60dp"
+                android:backgroundTint="@color/blue"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Already have an account?"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/btn_back_to_login"
+                android:layout_marginStart="10dp"
+                android:text="Login"
+                android:textStyle="bold"
+                android:textColor="@color/yellow"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+    <RelativeLayout
+        android:id="@+id/loading_register"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:visibility="gone"
+        >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#B2000000"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:background="#00000000"
+            android:gravity="center_horizontal">
+
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/loading_progress"/>
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please Wait.."
+                android:background="#00000000"
+                android:textSize="20sp"
+                android:textColor="@color/purple_200">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+
+
+</RelativeLayout>

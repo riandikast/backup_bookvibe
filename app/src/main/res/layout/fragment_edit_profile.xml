@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="30dp"
+
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/btn_back_profile"
+                android:src="@drawable/ic_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Edit Profile"
+                android:textSize="25sp"
+                android:fontFamily="@font/poppins_bold"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+            <FrameLayout
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+
+                    android:id="@+id/profile_image"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:src="@drawable/profile_circle"
+                    android:layout_gravity="center_horizontal"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FF000000"/>
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+
+                    android:id="@+id/btn_add_profile"
+                    android:layout_marginTop="100dp"
+                    android:layout_marginLeft="45dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_add_profile_pic"
+                    android:layout_gravity="center_horizontal"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FF000000"/>
+
+            </FrameLayout>
+
+
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="60dp"
+                android:text="Name"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </TextView>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_name"
+                app:helperTextTextColor="@color/red"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:textSize="17sp"
+                    android:hint="Enter your name"
+                    android:fontFamily="@font/poppins"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/name_text"
+                    android:background="@drawable/rectangle_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="60dp"
+                android:text="Address"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </TextView>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/field_address"
+                app:helperTextTextColor="@color/red"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:textSize="17sp"
+                    android:hint="Example : Kaliraya 2 Street"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/address_text"
+                    android:fontFamily="@font/poppins"
+                    android:background="@drawable/rectangle_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </EditText>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="60dp"
+                android:text="Phone Number"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </TextView>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_nomor"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="60dp"
+                app:helperTextTextColor="@color/red"
+                android:layout_marginRight="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:textSize="17sp"
+                    android:hint="Example : +6282104564123"
+                    android:layout_marginTop="10dp"
+                    android:inputType="phone"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/phone_text"
+                    android:fontFamily="@font/poppins"
+                    android:background="@drawable/rectangle_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                </EditText>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_save_changes"
+                android:text="Save Changes"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_marginHorizontal="80dp"
+                android:backgroundTint="@color/blue"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </androidx.appcompat.widget.AppCompatButton>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/post_loadingProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#B2000000" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="#00000000"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/loading_progress" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:text="Please Wait.."
+                android:textColor="@color/purple_200"
+                android:textSize="20sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
