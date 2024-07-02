@@ -1,6 +1,12 @@
 package com.sleepydev.bookvibe.model
 
 
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -9,10 +15,12 @@ import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import javax.inject.Singleton
 import javax.net.ssl.*
 
 
-
+@Module
+@InstallIn(SingletonComponent::class)
 object ApiClient {
 
     const val BASE_URL = "https://667c73e13c30891b865cb78f.mockapi.io/"
@@ -25,16 +33,25 @@ object ApiClient {
             }
         }
 
-    val instance : ApiService by lazy {
-        val retrofit = getUnsafeOkHttpClient()?.let {
-            Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(it)
-                .build()
-        }
-        retrofit!!.create(ApiService::class.java)
-    }
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(logging)
+        .build()
+
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+
+            .client(client)
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideAppApi(retrofit: Retrofit): ApiService =
+        retrofit.create(ApiService::class.java)
 
     private fun getUnsafeOkHttpClient(): OkHttpClient? {
         return try {

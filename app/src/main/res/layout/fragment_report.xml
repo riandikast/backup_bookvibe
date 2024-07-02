@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_background"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/title_page"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/btn_back_profile"
+                    android:src="@drawable/ic_back"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Sales Report"
+                    android:textSize="25sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/content_page"
+                android:visibility="invisible"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp">
+
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/total_sold"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="90dp"
+                    android:text="Total Sold Product: 20"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:textColor="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_revenue"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="90dp"
+                    android:text="Revenue : Rp. 2000"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_bold"
+
+                    android:textColor="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/inv_valuation"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="90dp"
+                    android:text="Inventory Valuation : Rp. 200"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:textColor="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/rv_aov"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="90dp"
+                    android:text="Average Order Value : Rp. 200"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:visibility="visible"
+            android:indeterminateTint="@color/blue"
+            android:layout_centerInParent="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+        </ProgressBar>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

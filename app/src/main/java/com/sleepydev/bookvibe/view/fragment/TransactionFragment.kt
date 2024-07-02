@@ -1,33 +1,49 @@
 package com.sleepydev.bookvibe.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.sleepydev.bookvibe.R
+import com.sleepydev.bookvibe.adapter.HomeAdapter
+import com.sleepydev.bookvibe.adapter.TransactionAdapter
+import com.sleepydev.bookvibe.databinding.FragmentProductBinding
+import com.sleepydev.bookvibe.databinding.FragmentRegisterBinding
+import com.sleepydev.bookvibe.databinding.FragmentTransactionBinding
+import com.sleepydev.bookvibe.databinding.TransactionAdapterBinding
+import com.sleepydev.bookvibe.utils.CustomToast
+import com.sleepydev.bookvibe.viewmodel.NetworkViewModel
+import com.sleepydev.bookvibe.viewmodel.ProductViewModel
+import com.sleepydev.bookvibe.viewmodel.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TransactionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class TransactionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding:  FragmentTransactionBinding? = null
+    private val binding get() = _binding!!
+
+    private val networkViewModel: NetworkViewModel by viewModels()
+    private val  productViewModel: ProductViewModel by viewModels()
+    private val  userViewModel: UserViewModel by viewModels()
+
+    private lateinit var myTransactionAdapter: TransactionAdapter
+
+    private val customToast = CustomToast()
+    var toastShown = false
+    var  preventFirstLoad = true
+    var currentUserID = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -35,26 +51,79 @@ class TransactionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_transaction, container, false)
+        _binding =  FragmentTransactionBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TransactionFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TransactionFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        checkNetwork()
+
+    }
+
+    fun checkNetwork(){
+        networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
+            if (isOnline){
+
+                preventFirstLoad = false
+                getMyTransaction()
+
+            }else{
+                toastShown = false
+                binding.progressBar.visibility = View.VISIBLE
+                binding.contentPage.visibility = View.INVISIBLE
+
+                if (!preventFirstLoad){
+                    customToast.customFailureToast(requireContext(),"No Internet Connection")
+
+                }else{
+                    preventFirstLoad = false
                 }
             }
+        }
+
+    }
+    @SuppressLint("SuspiciousIndentation")
+    fun getMyTransaction(){
+        userViewModel.userID(requireContext()).observe(viewLifecycleOwner){
+          currentUserID = it
+            userViewModel.getCurrentUser(currentUserID)
+            userViewModel.currentUserObserver.observe(viewLifecycleOwner){user->
+                userViewModel.currentUserResponseCode.observe(viewLifecycleOwner){code->
+                    if (code == "200"){
+                        binding.list.layoutManager =
+                            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
+
+                        val sorted = user.history.sortedByDescending { it.time }
+
+
+                        myTransactionAdapter = TransactionAdapter( this)
+                        myTransactionAdapter.setProductList(sorted)
+                        binding.list.adapter = myTransactionAdapter
+                        myTransactionAdapter.notifyDataSetChanged()
+                        binding.progressBar.visibility = View.GONE
+                        binding.contentPage.visibility = View.VISIBLE
+
+                        if (myTransactionAdapter.itemCount.toString() == "0"){
+
+                            binding.checkdata.visibility = View.VISIBLE
+                        }else{
+                            binding.checkdata.visibility = View.GONE
+                        }
+
+                    }else{
+
+
+                    }
+                }
+            }
+        }
+
+
+
+
     }
 }

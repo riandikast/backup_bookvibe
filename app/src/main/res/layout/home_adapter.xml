@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:backgroundTint="@color/transparent"
+        android:id="@+id/card"
+        android:layout_margin="10dp"
+        android:layout_width="180dp"
+        android:layout_height="270dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/product_image"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                >
+            </ImageView>
+
+            <LinearLayout
+                android:layout_marginStart="15dp"
+                android:layout_below="@+id/product_image"
+                android:orientation="vertical"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/poppins"
+                    android:layout_below="@+id/product_image"
+                    android:text="Book"
+                    android:textSize="16sp"
+                    android:id="@+id/tv_name"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/poppins"
+                    android:layout_below="@+id/product_image"
+                    android:text="Rp. 20000"
+                    android:textSize="19sp"
+                    android:id="@+id/tv_price"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content">
+                </TextView>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/poppins"
+                    android:layout_below="@+id/product_image"
+                    android:text="20 Sold"
+                    android:textSize="14sp"
+                    android:id="@+id/tv_sold"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content">
+                </TextView>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

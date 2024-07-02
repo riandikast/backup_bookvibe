@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:minWidth="800dp"
+    android:minHeight="300dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/current_balance"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Balance Rp. 100000"
+        android:textSize="20sp"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <TextView
+
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Input Amount (Rp)"
+        android:textSize="18sp"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputBalance"
+        app:prefixText="Rp. "
+        app:expandedHintEnabled="false"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_height="wrap_content">
+
+        <EditText
+
+            android:layout_gravity="top"
+            android:paddingTop="15dp"
+            android:textSize="20sp"
+            android:maxLength="9"
+            android:inputType="number"
+            android:id="@+id/field_balance"
+            android:background="@drawable/rectangle_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+
+        android:id="@+id/btn_topup"
+        android:text="Top Up"
+        android:enabled="false"
+        android:alpha="0.6"
+        android:textSize="12sp"
+        android:background="@drawable/rounded_button"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/blue"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="150dp"
+        android:layout_height="40dp">
+    </androidx.appcompat.widget.AppCompatButton>
+
+
+
+</LinearLayout>

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id ("kotlin-kapt")
     id ("kotlin-parcelize")
+    id ("com.google.dagger.hilt.android")
 
 }
 
@@ -64,14 +65,17 @@ dependencies {
 
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha04")
 
-    implementation ("androidx.datastore:datastore-preferences:1.0.0-alpha01")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0-alpha02")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation ("com.github.bumptech.glide:glide:4.13.0")
+    implementation( "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0")
 
-
+    implementation ("com.google.dagger:hilt-android:2.51.1")
+    kapt ("com.google.dagger:hilt-compiler:2.51.1")
 
 
     implementation(libs.androidx.room.runtime)

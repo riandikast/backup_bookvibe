@@ -11,6 +11,7 @@
     <color name="blue">#174d69</color>
     <color name="yellow">#ea9239</color>
     <color name="red">#FF0000</color>
+    <color name="transparent">#00000000</color>
 
 
 </resources>

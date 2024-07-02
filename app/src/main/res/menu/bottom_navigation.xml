@@ -7,11 +7,7 @@
        >
     </item>
 
-    <item
-        android:id="@+id/wishlistFragment"
-        android:title="Wishlist"
-        android:icon="@drawable/wishlist_icon_selector"
-     />
+
 
     <item
         android:id="@+id/transactionFragment"

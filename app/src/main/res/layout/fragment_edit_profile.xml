@@ -2,10 +2,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_background"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="30dp"
-
     android:layout_height="match_parent">
 
     <ScrollView
@@ -17,31 +16,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
-            <ImageView
+            <LinearLayout
+                android:id="@+id/title_page"
                 android:layout_marginTop="30dp"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/btn_back_profile"
-                android:src="@drawable/ic_back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"/>
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/btn_back_profile"
+                    android:src="@drawable/ic_back"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
 
-            <TextView
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center_horizontal"
-                android:text="Edit Profile"
-                android:textSize="25sp"
-                android:fontFamily="@font/poppins_bold"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/blue"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Edit Profile"
+                    android:textSize="25sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="invisible"
+                android:id="@+id/content_page"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </TextView>
+
             <FrameLayout
                 android:layout_gravity="center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+
+                    android:id="@+id/default_profile"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:src="@drawable/profile_circle"
+                    android:layout_gravity="center_horizontal"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FF000000"/>
+
 
                 <de.hdodenhof.circleimageview.CircleImageView
 
@@ -101,9 +126,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"/>
             </com.google.android.material.textfield.TextInputLayout>
-
-
-
 
             <TextView
                 android:layout_marginTop="10dp"
@@ -175,6 +197,8 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_save_changes"
                 android:text="Save Changes"
+                android:enabled="false"
+                android:alpha="0.6"
                 android:background="@drawable/rounded_button"
                 android:textColor="@color/white"
                 android:fontFamily="@font/poppins_medium"
@@ -186,50 +210,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </androidx.appcompat.widget.AppCompatButton>
-
+            </LinearLayout>
 
 
         </LinearLayout>
     </ScrollView>
 
     <RelativeLayout
-        android:id="@+id/post_loadingProfile"
+
+        android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00000000"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#B2000000" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ProgressBar
+            android:visibility="visible"
+            android:indeterminateTint="@color/blue"
             android:layout_centerInParent="true"
-            android:background="#00000000"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+        </ProgressBar>
 
-            <pl.droidsonroids.gif.GifImageView
-                android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/loading_progress" />
+    </RelativeLayout>
 
-            <TextView
+    <RelativeLayout
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#00000000"
-                android:text="Please Wait.."
-                android:textColor="@color/purple_200"
-                android:textSize="20sp">
+        android:id="@+id/change_image_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            </TextView>
-
-        </LinearLayout>
+        <ProgressBar
+            android:visibility="invisible"
+            android:indeterminateTint="@color/blue"
+            android:layout_centerInParent="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+        </ProgressBar>
 
     </RelativeLayout>
 </RelativeLayout>

@@ -17,4 +17,6 @@ data class UpdateResponse(
     val address: String,
     @SerializedName("phone_number")
     val phone_number: String,
+    @SerializedName("image")
+    val image: String? = null,
 ): Parcelable
