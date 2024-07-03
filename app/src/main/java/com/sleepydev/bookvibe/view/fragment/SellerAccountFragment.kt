@@ -65,6 +65,9 @@ class SellerAccountFragment : Fragment() {
     var  preventFirstLoad = true
     lateinit var inputBinding : TopupDialogBinding
 
+    private var handler: Handler? = null
+    private var toastRunnable: Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -142,6 +145,7 @@ class SellerAccountFragment : Fragment() {
 
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
+                handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getUserData()
 
@@ -156,7 +160,13 @@ class SellerAccountFragment : Fragment() {
 
                 topUpDialog.dismiss()
                 if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
+
+                    handler = Handler(Looper.getMainLooper())
+                    toastRunnable = Runnable {
+                        customToast.customFailureToast(requireContext(), "No Internet Connection")
+                    }
+
+                    handler?.postDelayed(toastRunnable!!, 4000)
                 }else{
                     preventFirstLoad = false
                 }

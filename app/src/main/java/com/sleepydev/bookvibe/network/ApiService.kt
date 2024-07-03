@@ -9,7 +9,6 @@ import retrofit2.http.*
 
 interface ApiService {
 
-
     @GET("user")
     fun getAllUser(): Call<List<User>>
 

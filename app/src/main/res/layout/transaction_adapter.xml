@@ -83,14 +83,14 @@
 
                     <TextView
                         android:id="@+id/balance_status"
-                        android:gravity="center"
-
-                        android:layout_marginStart="5dp"
+                        android:gravity="center|start"
+                        android:paddingStart="10dp"
+                        android:layout_marginStart="70dp"
                         android:fontFamily="@font/poppins"
                         android:text="- Rp. 80000"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textColor="@color/black"
                         android:layout_width="180dp"
                         android:layout_height="match_parent">

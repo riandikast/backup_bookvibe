@@ -61,13 +61,6 @@ class SplashFragment : Fragment() {
         if (binding.appicon.isVisible){
             Handler(Looper.getMainLooper()).postDelayed({
 
-//                view?.findNavController()?.navigate(
-//                    R.id.tabFragment, null,
-//                    NavOptions.Builder()
-//                        .setPopUpTo(
-//                            R.id.splashFragment,
-//                            true
-//                        ).build())
 
             }, 2000)
         }

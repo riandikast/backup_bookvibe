@@ -2,6 +2,8 @@ package com.sleepydev.bookvibe.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +42,8 @@ class TransactionFragment : Fragment() {
     var  preventFirstLoad = true
     var currentUserID = 0
 
+    private var handler: Handler? = null
+    private var toastRunnable: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +70,7 @@ class TransactionFragment : Fragment() {
     fun checkNetwork(){
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
-
+                handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getMyTransaction()
 
@@ -74,10 +78,16 @@ class TransactionFragment : Fragment() {
                 toastShown = false
                 binding.progressBar.visibility = View.VISIBLE
                 binding.contentPage.visibility = View.INVISIBLE
+                binding.checkdata.visibility = View.INVISIBLE
 
                 if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
 
+                    handler = Handler(Looper.getMainLooper())
+                    toastRunnable = Runnable {
+                        customToast.customFailureToast(requireContext(), "No Internet Connection")
+                    }
+
+                    handler?.postDelayed(toastRunnable!!, 4000)
                 }else{
                     preventFirstLoad = false
                 }

@@ -43,6 +43,7 @@ class LoginFragment : Fragment() {
     lateinit var userManager : UserManager
     private val networkViewModel: NetworkViewModel by viewModels()
     var isDataObtained = false
+    var isConnect = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,16 +68,23 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnlogin.setOnClickListener {
-            if (binding.loginemail.text.isNotEmpty() && binding.loginpassword.text.isNotEmpty()){
-                email = binding.loginemail.text.toString()
-                password = binding.loginpassword.text.toString()
-                authLogin()
+            if (isConnect){
 
-            }
-            else{
+                if (binding.loginemail.text.isNotEmpty() && binding.loginpassword.text.isNotEmpty()){
+                    email = binding.loginemail.text.toString()
+                    password = binding.loginpassword.text.toString()
+                    authLogin()
+
+                }
+                else{
+                    val customToast = CustomToast()
+                    customToast.customFailureToast(requireContext(),"Please Fill All the Form")
+
+                }
+
+            }else{
                 val customToast = CustomToast()
-                customToast.customFailureToast(requireContext(),"Please Fill All the Form")
-
+                customToast.customFailureToast(requireContext(),"No Internet Connection")
 
             }
         }
@@ -93,12 +101,12 @@ class LoginFragment : Fragment() {
 
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
-                val customToast = CustomToast()
+                 isConnect = true
 
                 getDataUser()
 
             }else{
-
+                isConnect = false
 
             }
         }
@@ -120,18 +128,14 @@ class LoginFragment : Fragment() {
     }
 
     fun authLogin() {
-
             userManager = UserManager(requireActivity())
             networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
-                if (isOnline){
                     if (isDataObtained){
                         if(dataUser.isEmpty()){
-
                             val customToast = CustomToast()
                             customToast.customFailureToast(requireContext(),"Wrong Email or Password")
 
                         }else{
-
                             for (i in dataUser.indices) {
                                 if (email == dataUser[i].email && password == dataUser[i].password) {
                                     GlobalScope.launch {
@@ -166,11 +170,6 @@ class LoginFragment : Fragment() {
 
                             }
                         }
-
-                }
-            }else{
-                    val customToast = CustomToast()
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
 
                 }
 

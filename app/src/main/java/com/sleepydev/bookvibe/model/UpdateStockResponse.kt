@@ -12,4 +12,6 @@ data class UpdateStockResponse (
     val id: Int,
     @SerializedName("stock")
     val stock: Int,
+    @SerializedName("price")
+    val price: Int,
 ): Parcelable

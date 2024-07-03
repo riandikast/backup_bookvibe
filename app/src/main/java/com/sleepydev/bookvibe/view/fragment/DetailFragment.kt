@@ -67,7 +67,7 @@ class DetailFragment : Fragment() {
     var currentProductID by Delegates.notNull<Int>()
     var currentSellerID : Int? = null
     var currentUserID by Delegates.notNull<Int>()
-
+    lateinit var dialog : AlertDialog
     lateinit var getOldHistory : List<TransactionItemResponse>
     lateinit var getSellerOldHistory : List<TransactionItemResponse>
     var getPrice = 0
@@ -83,7 +83,10 @@ class DetailFragment : Fragment() {
     lateinit var lastHistory : Any
     var currentUserAdress = ""
     var currentUserPhone = ""
+    var isConnect = false
 
+    private var handler: Handler? = null
+    private var toastRunnable: Runnable? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +104,7 @@ class DetailFragment : Fragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getOldHistory = mutableListOf()
@@ -112,12 +115,12 @@ class DetailFragment : Fragment() {
         binding.buyBtn.setOnClickListener {
 
 
-                var showtoast = false
+
                 val inputBinding = PurchaseDialogBinding.inflate(
                     LayoutInflater.from(requireContext())
                 )
 
-                val dialog = AlertDialog.Builder(requireContext())
+                 dialog = AlertDialog.Builder(requireContext())
                     .setView(inputBinding.root)
                     .create()
 
@@ -145,16 +148,18 @@ class DetailFragment : Fragment() {
                         isEditing = true
 
                         if (s.isNullOrEmpty()) {
-                            currentQty = 1
+                            currentQty = 0
                             inputBinding.btnConfirm.isEnabled = false
                             inputBinding.btnConfirm.alpha = 0.6F
                             inputBinding.tvTotalPrice.text = "Total Price: Rp. 0"
                         } else {
-                            val value = s.toString().toIntOrNull() ?: 1
+                            val value = s.toString().toIntOrNull() ?: 0
                             currentQty = value
                             if (value < 1) {
                                 inputBinding.tvStockAmount.setText("1")
                                 inputBinding.tvStockAmount.setSelection(inputBinding.tvStockAmount.text.length)
+                                totalPrice = 1 * getPrice
+                                inputBinding.tvTotalPrice.text = "Total Price: Rp. $totalPrice"
                             } else {
                                 val adjustedValue = if (value > getStock) {
                                     getStock
@@ -165,6 +170,8 @@ class DetailFragment : Fragment() {
                                         currentQty = adjustedValue
                                         inputBinding.tvStockAmount.setText(adjustedValue.toString())
                                         inputBinding.tvStockAmount.setSelection(inputBinding.tvStockAmount.text.length)
+                                        totalPrice = adjustedValue * getPrice
+                                        inputBinding.tvTotalPrice.text = "Total Price: Rp. $totalPrice"
                                 }else{
                                     val limit  = 2147483647
                                     if (adjustedValue.toLong() * getPrice >  limit){
@@ -252,21 +259,31 @@ class DetailFragment : Fragment() {
 
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
-
+                isConnect = true
+                handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getMyProduct()
 
+
             }else{
+                isConnect = false
                 toastShown = false
                 binding.progressBar.visibility = View.VISIBLE
                 binding.contentPage.visibility = View.INVISIBLE
-
+                binding.buyBtn.visibility = View.INVISIBLE
 
                 if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
+                    handler = Handler(Looper.getMainLooper())
+                    toastRunnable = Runnable {
+                        customToast.customFailureToast(requireContext(), "No Internet Connection")
+                    }
 
+                    handler?.postDelayed(toastRunnable!!, 4000)
                 }else{
                     preventFirstLoad = false
+                }
+                if (dialog.isShowing){
+                    dialog.dismiss()
                 }
             }
         }
@@ -402,7 +419,7 @@ class DetailFragment : Fragment() {
                 }
             }
 
-        }, 800)
+        }, 1000)
 
 
 
@@ -412,53 +429,50 @@ class DetailFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun checkInternetBeforePurchase(productID : Int, dataProduct: SoldResponse, userID:Int, adjustedBalance : TopUpResponse){
-        networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
+        if (isConnect){
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val date = Date()
+            val time = dateFormat.format(date)
+            val responseItem =  TransactionItemResponse(
+                IDGenerator.generateUniqueID(),
+                "Purchased",
+                currentProductID,
+                productName,
+                productImage,
+                currentQty,
+                totalPrice.toString(),
+                time
+            )
 
-            if (isOnline){
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                val date = Date()
-                val time = dateFormat.format(date)
-                val responseItem =  TransactionItemResponse(
-                    IDGenerator.generateUniqueID(),
-                    "Purchased",
-                    currentProductID,
-                    productName,
-                    productImage,
-                    currentQty,
-                    totalPrice.toString(),
-                    time
-                )
-
-                val sellerResponseItem=  TransactionItemResponse(
-                    IDGenerator.generateUniqueID(),
-                    "Sold",
-                    currentProductID,
-                    productName,
-                    productImage,
-                    currentQty,
-                    totalPrice.toString(),
-                    time
-                )
+            val sellerResponseItem=  TransactionItemResponse(
+                IDGenerator.generateUniqueID(),
+                "Sold",
+                currentProductID,
+                productName,
+                productImage,
+                currentQty,
+                totalPrice.toString(),
+                time
+            )
 
 
-                val dataUser = TransactionResponse(currentUserID, getOldHistory)
-                val dataSeller = TransactionResponse(currentSellerID!!, getSellerOldHistory)
-                handleTransactionHistory(dataUser, dataSeller, responseItem, sellerResponseItem )
-                handleProductSold(productID, dataProduct, userID, adjustedBalance)
+            val dataUser = TransactionResponse(currentUserID, getOldHistory)
+            val dataSeller = TransactionResponse(currentSellerID!!, getSellerOldHistory)
+            handleTransactionHistory(dataUser, dataSeller, responseItem, sellerResponseItem )
+            handleProductSold(productID, dataProduct, userID, adjustedBalance)
 
 
+
+        }else{
+            toastShown = false
+            binding.progressBar.visibility = View.VISIBLE
+            binding.contentPage.visibility = View.INVISIBLE
+
+            if (!preventFirstLoad){
+                customToast.customFailureToast(requireContext(),"No Internet Connection")
 
             }else{
-                toastShown = false
-                binding.progressBar.visibility = View.VISIBLE
-                binding.contentPage.visibility = View.INVISIBLE
-
-                if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
-
-                }else{
-                    preventFirstLoad = false
-                }
+                preventFirstLoad = false
             }
         }
     }
@@ -505,8 +519,6 @@ class DetailFragment : Fragment() {
             }
         }
         usertViewModel.topUpBalance(userID, adjustedBalance)
-
-
     }
 
     fun handleTransactionHistory (transactionResponse: TransactionResponse, sellerTransactionResponse: TransactionResponse, list:TransactionItemResponse, listSeller:TransactionItemResponse){
@@ -515,9 +527,6 @@ class DetailFragment : Fragment() {
 
         }
         usertViewModel.updateTransactionForSeller(currentSellerID!!, sellerTransactionResponse, listSeller)
-        usertViewModel.updateTransactionForSellerResponseCode.observe(viewLifecycleOwner){code->
-
-        }
 
     }
 

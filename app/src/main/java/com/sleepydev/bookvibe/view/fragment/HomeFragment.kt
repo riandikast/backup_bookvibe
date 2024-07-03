@@ -43,6 +43,8 @@ class HomeFragment : Fragment() {
     var  preventFirstLoad = true
 
     private lateinit var myProductAdapter: HomeAdapter
+    private var handler: Handler? = null
+    private var toastRunnable: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,13 +64,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkNetwork()
+        preventFirstLoad = false
 
     }
 
     fun checkNetwork(){
+
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
-
+                handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getMyProduct()
 
@@ -78,8 +82,15 @@ class HomeFragment : Fragment() {
                 binding.contentPage.visibility = View.INVISIBLE
 
                 if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
 
+                    preventFirstLoad = true
+
+                    handler = Handler(Looper.getMainLooper())
+                    toastRunnable = Runnable {
+                        customToast.customFailureToast(requireContext(), "No Internet Connection")
+                    }
+
+                    handler?.postDelayed(toastRunnable!!, 4000)
                 }else{
                     preventFirstLoad = false
                 }
@@ -98,9 +109,9 @@ class HomeFragment : Fragment() {
                 if (code == "200"){
                     binding.list.layoutManager =  GridLayoutManager(requireContext(), 2)
 
-//                    val sorted = it.sortedByDescending { it.createdAt }
+                    val sorted = it.sortedByDescending { it.createdAt }
                     myProductAdapter = HomeAdapter( this)
-                    myProductAdapter.setProductList(it)
+                    myProductAdapter.setProductList(sorted)
                     binding.list.adapter = myProductAdapter
 
                     myProductAdapter.notifyDataSetChanged()
@@ -129,8 +140,10 @@ class HomeFragment : Fragment() {
         super.onResume()
         binding.contentPage.visibility = View.INVISIBLE
         binding.progressBar.visibility = View.VISIBLE
-
+        preventFirstLoad = true
         checkNetwork()
+
+
 
     }
 

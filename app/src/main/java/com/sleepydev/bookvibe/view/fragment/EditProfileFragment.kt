@@ -103,6 +103,9 @@ class EditProfileFragment : Fragment() {
 
     private lateinit var pickFileLauncher: ActivityResultLauncher<Intent>
 
+    private var handler: Handler? = null
+    private var toastRunnable: Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getProfileImage = "".toUri()
@@ -280,7 +283,7 @@ class EditProfileFragment : Fragment() {
 
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
-
+                handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getUserData()
 
@@ -291,7 +294,12 @@ class EditProfileFragment : Fragment() {
                 binding.contentPage.visibility = View.INVISIBLE
 
                 if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
+                    handler = Handler(Looper.getMainLooper())
+                    toastRunnable = Runnable {
+                        customToast.customFailureToast(requireContext(), "No Internet Connection")
+                    }
+
+                    handler?.postDelayed(toastRunnable!!, 4000)
                 }else{
                     preventFirstLoad = false
                 }

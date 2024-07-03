@@ -2,10 +2,13 @@ package com.sleepydev.bookvibe.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -39,6 +42,10 @@ class ProductFragment : Fragment(), MyProductAdapter.RefreshCallback {
     var  preventFirstLoad = true
 
     var currentSeller by Delegates.notNull<Int>()
+    private var handler: Handler? = null
+    private var toastRunnable: Runnable? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,19 +80,28 @@ class ProductFragment : Fragment(), MyProductAdapter.RefreshCallback {
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
 
+                handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getMyProduct()
 
             }else{
                 toastShown = false
+                binding.emptyList.visibility = View.INVISIBLE
                 binding.progressBar.visibility = View.VISIBLE
                 binding.contentPage.visibility = View.INVISIBLE
 
                 if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
+                    handler = Handler(Looper.getMainLooper())
+                    toastRunnable = Runnable {
+                        customToast.customFailureToast(requireContext(), "No Internet Connection")
+                    }
 
+                    handler?.postDelayed(toastRunnable!!, 4000)
                 }else{
                     preventFirstLoad = false
+                }
+                if (myProductAdapter.getDialog().isShowing){
+                    myProductAdapter.getDialog().dismiss()
                 }
             }
         }
@@ -101,11 +117,8 @@ class ProductFragment : Fragment(), MyProductAdapter.RefreshCallback {
             productViewModel.getAllProductResponseCode.observe(viewLifecycleOwner){code->
 
                 if (code == "200"){
-
                     binding.list.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-
                     val sortedID = it.filter { it.sellerID == currentSeller }
                     val sorted = sortedID.sortedByDescending { it.createdAt }
                     myProductAdapter = MyProductAdapter( this)

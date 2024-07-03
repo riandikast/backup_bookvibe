@@ -11,6 +11,8 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -63,9 +65,11 @@ class AddProductFragment : Fragment() {
     var toastShown = false
     var  preventFirstLoad = true
     private val customToast = CustomToast()
-
+    var isConnect = false
     var currentUserID by Delegates.notNull<Int>()
     lateinit var currentUserNamee : String
+
+
 
     private lateinit var pickFileLauncher: ActivityResultLauncher<Intent>
     override fun onCreateView(
@@ -79,6 +83,7 @@ class AddProductFragment : Fragment() {
         sendNoImage = "true"
 
         checkNetwork()
+        formTextWatcher()
 
         pickFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -106,35 +111,38 @@ class AddProductFragment : Fragment() {
             val productPrice = binding.addProductPrice.text.toString()
             val productStock = binding.addProductStock.text.toString()
 
-            networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
+            if (isConnect){
 
-                if (isOnline){
-                    if (binding.addProductName.text.isNotEmpty() && binding.addProductDesc.text.isNotEmpty()
-                        && binding.addProductPrice.text.isNotEmpty()
-                        && binding.addProductStock.text.isNotEmpty()
-                        && image!=null
-                    ) {
-                        val productPriceInt = productPrice.toInt()
-                        val productStockInt = productStock.toInt()
-                        if (sendNoImage == "true"){
-                            val attachmentEmpty = "".toRequestBody("text/plain".toMediaTypeOrNull())
-                            image  =  MultipartBody.Part.createFormData(imageUri.toString(), "", attachmentEmpty)
-                            Log.d("tesblank", image.toString())
-                        }
+                if (binding.addProductName.text.isNotEmpty() && binding.addProductDesc.text.isNotEmpty()
+                    && binding.addProductPrice.text.isNotEmpty()
+                    && binding.addProductStock.text.isNotEmpty()
+                    && image!=null
+                ) {
+                    val productPriceInt = productPrice.toInt()
+                    val productStockInt = productStock.toInt()
+                    if (sendNoImage == "true"){
+                        val attachmentEmpty = "".toRequestBody("text/plain".toMediaTypeOrNull())
+                        image  =  MultipartBody.Part.createFormData(imageUri.toString(), "", attachmentEmpty)
+                        Log.d("tesblank", image.toString())
+                    }
+
+                    if (isConnect){
                         addProduct(productName, productDesc, productPriceInt!!, productStockInt!!, currentUserNamee, imageUri, currentUserID)
-                }else{
-
-                        val customToast = CustomToast()
-                        customToast.customFailureToast(requireContext(),"Please Fill All the Form")
-
 
                     }
-            }else{
-                    val customToast = CustomToast()
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
 
-
+                }else{
+                    if (isConnect){
+                        val customToast = CustomToast()
+                        customToast.customFailureToast(requireContext(),"Please Fill All the Form")
+                    }
                 }
+            }else{
+                isConnect = false
+                val customToast = CustomToast()
+                customToast.customFailureToast(requireContext(),"No Internet Connection")
+
+
             }
         }
 
@@ -147,6 +155,39 @@ class AddProductFragment : Fragment() {
 
     }
 
+    fun formTextWatcher (){
+        binding.addProductStock.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val value = s.toString().toIntOrNull() ?: 1
+                if (value < 1){
+                    binding.addProductStock.setText("1")
+                    binding.addProductStock.setSelection(binding.addProductStock.text.length)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // Enable or disable the button based on whether EditText is empty
+
+            }
+        })
+
+        binding.addProductPrice.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val value = s.toString().toIntOrNull() ?: 1
+                    if (value < 1){
+                        binding.addProductPrice.setText("1")
+                        binding.addProductPrice.setSelection(binding.addProductPrice.text.length)
+                    }
+            }
+            override fun afterTextChanged(s: Editable?) {
+                // Enable or disable the button based on whether EditText is empty
+            }
+        })
+    }
     private fun getContent(it : Uri) {
 
         val contentResolver = requireContext().contentResolver
@@ -212,20 +253,16 @@ class AddProductFragment : Fragment() {
     fun checkNetwork(){
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
-
+                isConnect = true
                 preventFirstLoad = false
                 getUserData()
 
             }else{
+                isConnect = false
                 toastShown = false
                 currentUserID = 0
 
 
-                if (!preventFirstLoad){
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
-                }else{
-                    preventFirstLoad = false
-                }
             }
         }
 

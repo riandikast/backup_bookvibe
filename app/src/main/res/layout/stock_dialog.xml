@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -55,6 +55,41 @@
             android:layout_marginStart="16dp"/>
     </LinearLayout>
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Price"
+        android:textSize="18sp"
+        android:layout_marginTop="40dp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputBalance"
+        app:prefixText="Rp. "
+        android:layout_marginTop="20dp"
+        app:expandedHintEnabled="false"
+        android:layout_width="200dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="20dp"
+        android:layout_height="wrap_content">
+
+        <EditText
+
+            android:layout_gravity="top"
+            android:paddingTop="15dp"
+            android:textSize="16sp"
+            android:maxLength="9"
+            android:inputType="number"
+            android:id="@+id/et_price"
+            android:background="@drawable/rectangle_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <Button
         android:layout_gravity="center_horizontal"
         android:id="@+id/btn_confirm"
@@ -63,5 +98,6 @@
         android:textColor="@color/white"
         android:layout_height="wrap_content"
         android:text="Confirm"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="20dp"/>
+
 </LinearLayout>

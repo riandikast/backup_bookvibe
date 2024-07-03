@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 class UserRepository  @Inject constructor (private val apiService: ApiService) {
 
-
     suspend fun currentUser(id: Int, livedata: MutableLiveData<User>, responseCode: MutableLiveData<String>){
         val apiClient: Call<User> = apiService.getCurrentUser(id)
         apiClient.enqueue(object : Callback<User> {

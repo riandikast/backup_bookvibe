@@ -46,6 +46,7 @@ class RegisterFragment : Fragment() {
     private val networkViewModel: NetworkViewModel by viewModels()
     var authValid by Delegates.notNull<Boolean>()
     private lateinit var arrayAdapter: ArrayAdapter<String>
+    var isConnect = false
     var isDataObtained = false
 
 
@@ -81,72 +82,70 @@ class RegisterFragment : Fragment() {
             password = binding.regisPassword.text.toString()
             val confirmpass = binding.confirmPassword.text.toString()
 
+            if (isConnect){
+                if (isDataObtained){
+                    if (binding.registName.text.isNotEmpty() && binding.regisEmail.text.isNotEmpty()
+                        && binding.regisPassword.text.isNotEmpty()
+                        && binding.confirmPassword.text.isNotEmpty()
+                        && selectedAccountType != ""
+                    ) {
+                        if (password == confirmpass) {
 
-            networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
-                if (isOnline){
-                    if (isDataObtained){
-                        if (binding.registName.text.isNotEmpty() && binding.regisEmail.text.isNotEmpty()
-                            && binding.regisPassword.text.isNotEmpty()
-                            && binding.confirmPassword.text.isNotEmpty()
-                            && selectedAccountType != ""
-                        ) {
-                            if (password == confirmpass) {
+                            if(dataUser.isEmpty()){
+                                authValid = true
 
-                                if(dataUser.isEmpty()){
-                                    authValid = true
+                            }else{
+                                for (i in dataUser.indices) {
+                                    if (registEmail == dataUser[i].email) {
+                                        authValid = false
+                                        val customToast = CustomToast()
+                                        customToast.customFailureToast(requireContext(),"Email Already Registered")
 
-                                }else{
-                                    for (i in dataUser.indices) {
-                                        if (registEmail == dataUser[i].email) {
-                                            authValid = false
-                                            val customToast = CustomToast()
-                                            customToast.customFailureToast(requireContext(),"Email Already Registered")
-
-                                            break
-                                        } else {
-                                            authValid = true
+                                        break
+                                    } else {
+                                        authValid = true
 
 
-                                        }
                                     }
                                 }
-                                if(isValidEmail(registEmail)){
-                                    if(authValid){
-                                        regisUser(name, registEmail, password, selectedAccountType)
-                                    }
-                                }else{
-                                    val customToast = CustomToast()
-                                    customToast.customFailureToast(requireContext(),"Email Not Valid")
-
-
+                            }
+                            if(isValidEmail(registEmail)){
+                                if(authValid){
+                                    regisUser(name, registEmail, password, selectedAccountType)
                                 }
-
-
-                            } else {
+                            }else{
                                 val customToast = CustomToast()
-                                customToast.customFailureToast(requireContext(),"Confirm password didn't match")
+                                customToast.customFailureToast(requireContext(),"Email Not Valid")
+
 
                             }
+
+
                         } else {
                             val customToast = CustomToast()
-                            customToast.customFailureToast(requireContext(),"Please Fill All the Form")
+                            customToast.customFailureToast(requireContext(),"Confirm password didn't match")
 
                         }
-                    }else{
+                    } else {
                         val customToast = CustomToast()
-                        customToast.customFailureToast(requireContext(),"Register Failed")
+                        customToast.customFailureToast(requireContext(),"Please Fill All the Form")
 
                     }
-
-
                 }else{
-
                     val customToast = CustomToast()
-                    customToast.customFailureToast(requireContext(),"No Internet Connection")
-
+                    customToast.customFailureToast(requireContext(),"Register Failed")
 
                 }
+
+
+            }else{
+
+                val customToast = CustomToast()
+                customToast.customFailureToast(requireContext(),"No Internet Connection")
+
+
             }
+
 
         }
 
@@ -165,12 +164,12 @@ class RegisterFragment : Fragment() {
 
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
-
+                isConnect = true
                 getDataUser()
 
             }else{
 
-
+                isConnect = false
             }
         }
 
