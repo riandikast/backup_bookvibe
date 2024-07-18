@@ -30,9 +30,12 @@ import com.sleepydev.bookvibe.viewmodel.ProductViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-
-class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapter.ViewHolder>() {
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+class MyProductAdapter(
+    fragment: Fragment,
+) : RecyclerView.Adapter<MyProductAdapter.ViewHolder>() {
+    class ViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView)
 
     private var _binding: MyProductAdapterBinding? = null
     private val binding get() = _binding!!
@@ -43,19 +46,26 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
     private var dialogBinding: StockDialogBinding? = null
     lateinit var dialogUpdate: AlertDialog
 
-    fun getDialog(): AlertDialog {
-        return dialogUpdate
-    }
+
+    fun getDialog(): AlertDialog = dialogUpdate
 
     var validStock = true
     var validPrice = true
-
 
     init {
 
         networkVM = ViewModelProvider(fragment)[NetworkViewModel::class.java]
         productVM = ViewModelProvider(fragment)[ProductViewModel::class.java]
+        dialogBinding =
+            StockDialogBinding.inflate(
+                LayoutInflater.from(fragment.requireContext()),
+            )
 
+        dialogUpdate =
+            AlertDialog
+                .Builder(fragment.requireContext())
+                .setView(dialogBinding!!.root)
+                .create()
     }
 
     interface RefreshCallback {
@@ -63,14 +73,11 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
     }
 
     @SuppressLint("DefaultLocale")
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        dialogBinding = StockDialogBinding.inflate(
-            LayoutInflater.from(fragment.requireContext())
-        )
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
 
-        dialogUpdate = AlertDialog.Builder(fragment.requireContext())
-            .setView(dialogBinding!!.root)
-            .create()
         binding.productName.text = productData!![position].name
 
         val stock = productData!![position].stock
@@ -82,11 +89,14 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
         binding.productStock.text = "Stock: $stock"
         val getImage = productData!![position].image.toString()
 
-
-        val requestOptions = RequestOptions()
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .skipMemoryCache(false)
-        Glide.with(holder.itemView.context).load(getImage.toUri()).apply(requestOptions)
+        val requestOptions =
+            RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(false)
+        Glide
+            .with(holder.itemView.context)
+            .load(getImage.toUri())
+            .apply(requestOptions)
             .into(binding.productImage)
 
         binding.btnDelete.setOnClickListener {
@@ -106,27 +116,27 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
                                             val ct = CustomToast()
                                             ct.customSuccessToast(
                                                 holder.itemView.context,
-                                                "Product Deleted"
+                                                "Product Deleted",
                                             )
                                             showtoast = true
                                         }
                                         val refresh = fragment
                                         refresh.findNavController().navigate(
-                                            R.id.productFragment, null,
-                                            NavOptions.Builder()
+                                            R.id.productFragment,
+                                            null,
+                                            NavOptions
+                                                .Builder()
                                                 .setPopUpTo(
                                                     R.id.productFragment,
-                                                    true
-                                                ).build()
+                                                    true,
+                                                ).build(),
                                         )
-
                                     } else {
-
                                         if (!showtoast) {
                                             val ct = CustomToast()
                                             ct.customFailureToast(
                                                 holder.itemView.context,
-                                                "Delete Failed"
+                                                "Delete Failed",
                                             )
                                             showtoast = true
                                         }
@@ -134,13 +144,12 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
                                 }
                             }
                             productVM.deleteProduct(productData!![position].id)
-
                         } else {
                             if (!showtoast) {
                                 val ct = CustomToast()
                                 ct.customFailureToast(
                                     holder.itemView.context,
-                                    "No Internet Connection"
+                                    "No Internet Connection",
                                 )
                                 showtoast = true
                             }
@@ -148,8 +157,7 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
                     }
                 },
                 onNegativeAction = {
-
-                }
+                },
             )
         }
         binding.card.setOnClickListener {
@@ -157,16 +165,15 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
             GlobalScope.launch {
                 userManager.saveTempProduct(
                     productData!![position].id,
-                    productData!![position].image.toString(), productData!![position].sellerID
+                    productData!![position].image.toString(),
+                    productData!![position].sellerID,
                 )
             }
             fragment.findNavController().navigate(R.id.action_productFragment_to_detailFragment)
-
         }
 
         binding.btnUpdate.setOnClickListener {
             var showtoast = false
-
 
             var currentStock = productData!![position].stock
             var currentPrice = productData!![position].price
@@ -174,68 +181,77 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
             dialogBinding!!.etPrice.setText(currentPrice.toString())
             dialogBinding!!.tvStockAmount.setText(currentStock.toString())
 
-            dialogBinding!!.tvStockAmount.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-
-                    val value = s.toString().toIntOrNull() ?: 0
-                    validStock = !s.isNullOrEmpty()
-                    currentStock = value
-                    if (validPrice && validStock) {
-                        dialogBinding!!.btnConfirm.isEnabled = true
-                        dialogBinding!!.btnConfirm.alpha = 1F
-                    } else {
-                        dialogBinding!!.btnConfirm.isEnabled = false
-                        dialogBinding!!.btnConfirm.alpha = 0.6F
-                    }
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
-
-            dialogBinding!!.etPrice.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    val value = s.toString().toIntOrNull() ?: 0
-                    if (s.isNullOrEmpty()) {
-                        validPrice = false
-
-                    } else {
-                        if (value < 1) {
-                            dialogBinding!!.etPrice.setText("1")
-                            dialogBinding!!.etPrice.setSelection(dialogBinding!!.etPrice.text.length)
+            dialogBinding!!.tvStockAmount.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        val value = s.toString().toIntOrNull() ?: 0
+                        validStock = !s.isNullOrEmpty()
+                        currentStock = value
+                        if (validPrice && validStock) {
+                            dialogBinding!!.btnConfirm.isEnabled = true
+                            dialogBinding!!.btnConfirm.alpha = 1F
+                        } else {
+                            dialogBinding!!.btnConfirm.isEnabled = false
+                            dialogBinding!!.btnConfirm.alpha = 0.6F
                         }
-                        validPrice = true
-
                     }
-                    currentStock = value
-                    if (validPrice && validStock) {
-                        dialogBinding!!.btnConfirm.isEnabled = true
-                        dialogBinding!!.btnConfirm.alpha = 1F
-                    } else {
-                        dialogBinding!!.btnConfirm.isEnabled = false
-                        dialogBinding!!.btnConfirm.alpha = 0.6F
+
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int,
+                    ) {
                     }
-                }
 
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int,
+                    ) {}
+                },
+            )
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
+            dialogBinding!!.etPrice.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        val value = s.toString().toIntOrNull() ?: 0
+                        if (s.isNullOrEmpty()) {
+                            validPrice = false
+                        } else {
+                            if (value < 1) {
+                                dialogBinding!!.etPrice.setText("1")
+                                dialogBinding!!.etPrice.setSelection(dialogBinding!!.etPrice.text.length)
+                            }
+                            validPrice = true
+                        }
+                        currentStock = value
+                        if (validPrice && validStock) {
+                            dialogBinding!!.btnConfirm.isEnabled = true
+                            dialogBinding!!.btnConfirm.alpha = 1F
+                        } else {
+                            dialogBinding!!.btnConfirm.isEnabled = false
+                            dialogBinding!!.btnConfirm.alpha = 0.6F
+                        }
+                    }
 
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int,
+                    ) {
+                    }
 
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int,
+                    ) {}
+                },
+            )
 
             dialogBinding!!.btnDecrease.setOnClickListener {
                 if (currentStock > 0) {
@@ -261,42 +277,50 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
                                         val ct = CustomToast()
                                         ct.customSuccessToast(
                                             holder.itemView.context,
-                                            "Stock Updated"
+                                            "Stock Updated",
                                         )
                                         showtoast = true
                                     }
                                     val refresh = fragment
                                     refresh.findNavController().navigate(
-                                        R.id.productFragment, null,
-                                        NavOptions.Builder()
+                                        R.id.productFragment,
+                                        null,
+                                        NavOptions
+                                            .Builder()
                                             .setPopUpTo(
                                                 R.id.productFragment,
-                                                true
-                                            ).build()
+                                                true,
+                                            ).build(),
                                     )
-
                                 } else {
-
                                     if (!showtoast) {
                                         val ct = CustomToast()
                                         ct.customFailureToast(
                                             holder.itemView.context,
-                                            "Stock Not Updated"
+                                            "Stock Not Updated",
                                         )
                                         showtoast = true
                                     }
                                 }
                             }
                         }
-                        currentStock = dialogBinding!!.tvStockAmount.text.toString().toInt()
-                        currentPrice = dialogBinding!!.etPrice.text.toString().toInt()
-                        val newData = UpdateStockResponse(
-                            productData!![position].id,
-                            currentStock,
-                            currentPrice
-                        )
+                        currentStock =
+                            dialogBinding!!
+                                .tvStockAmount.text
+                                .toString()
+                                .toInt()
+                        currentPrice =
+                            dialogBinding!!
+                                .etPrice.text
+                                .toString()
+                                .toInt()
+                        val newData =
+                            UpdateStockResponse(
+                                productData!![position].id,
+                                currentStock,
+                                currentPrice,
+                            )
                         productVM.updateStock(productData!![position].id, newData)
-
                     } else {
                         if (!showtoast) {
                             val ct = CustomToast()
@@ -310,17 +334,18 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
 
             dialogUpdate.show()
         }
-
-
     }
 
     private var productData: List<Product>? = null
+
     fun setProductList(productList: List<Product>) {
         this.productData = productList
     }
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         _binding =
             MyProductAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
@@ -329,13 +354,10 @@ class MyProductAdapter(fragment: Fragment) : RecyclerView.Adapter<MyProductAdapt
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return if (productData == null) {
+    override fun getItemCount(): Int =
+        if (productData == null) {
             0
         } else {
             productData!!.size
         }
-    }
-
-
 }

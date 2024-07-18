@@ -26,9 +26,7 @@ class SplashFragment : Fragment() {
     ): View? {
         _binding =  FragmentSplashBinding.inflate(inflater, container, false)
         val view = binding.root
-
         Handler(Looper.getMainLooper()).postDelayed({
-
             view.findNavController().navigate(
                 R.id.homeFragment, null,
                 NavOptions.Builder()
@@ -47,7 +45,6 @@ class SplashFragment : Fragment() {
         super.onResume()
 
         Handler(Looper.getMainLooper()).postDelayed({
-
             view?.findNavController()?.navigate(
                 R.id.homeFragment, null,
                 NavOptions.Builder()
@@ -55,15 +52,7 @@ class SplashFragment : Fragment() {
                         R.id.splashFragment,
                         true
                     ).build())
-
         }, 2000)
-
-        if (binding.appicon.isVisible){
-            Handler(Looper.getMainLooper()).postDelayed({
-
-
-            }, 2000)
-        }
 
     }
 }

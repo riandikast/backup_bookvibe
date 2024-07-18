@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 class ProductRepository @Inject constructor (private val apiService: ApiService) {
 
-    suspend fun addProduct(name: String, desc:String, price:Int, stock:Int, sellerName:String, image: @RawValue Any? = null, sellerID: Int, soldCount: Int, revenue: Int, livedata: MutableLiveData<Product>, responseCode : MutableLiveData<String>){
-        val apiClient: Call<Product> = apiService.addProduct(name, desc, price, stock, sellerName,  "", image, sellerID, soldCount, revenue)
+    suspend fun addProduct(name: String, desc:String, price:Int, stock:Int, sellerName:String, image: @RawValue Any? = null, sellerID: Int, soldCount: Int, revenue: Int, satuan:String, livedata: MutableLiveData<Product>, responseCode : MutableLiveData<String>){
+        val apiClient: Call<Product> = apiService.addProduct(name, desc, price, stock, sellerName,  "", image, sellerID, soldCount, revenue, satuan)
         apiClient.enqueue(object : Callback<Product> {
             override fun onResponse(
                 call: Call<Product>,

@@ -83,8 +83,8 @@ class ProductFragment : Fragment(), MyProductAdapter.RefreshCallback {
                 handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getMyProduct()
-
             }else{
+
                 toastShown = false
                 binding.emptyList.visibility = View.INVISIBLE
                 binding.progressBar.visibility = View.VISIBLE
@@ -100,6 +100,7 @@ class ProductFragment : Fragment(), MyProductAdapter.RefreshCallback {
                 }else{
                     preventFirstLoad = false
                 }
+
                 if (myProductAdapter.getDialog().isShowing){
                     myProductAdapter.getDialog().dismiss()
                 }

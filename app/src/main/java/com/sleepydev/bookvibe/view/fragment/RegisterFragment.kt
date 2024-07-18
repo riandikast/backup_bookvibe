@@ -36,10 +36,8 @@ class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
-
     lateinit var registEmail: String
     lateinit var selectedAccountType: String
-
     lateinit var dataUser: List<User>
     lateinit var viewModel: UserViewModel
     lateinit var password: String
@@ -90,63 +88,52 @@ class RegisterFragment : Fragment() {
                         && selectedAccountType != ""
                     ) {
                         if (password == confirmpass) {
-
                             if(dataUser.isEmpty()){
                                 authValid = true
 
-                            }else{
+                            } else{
                                 for (i in dataUser.indices) {
                                     if (registEmail == dataUser[i].email) {
                                         authValid = false
                                         val customToast = CustomToast()
                                         customToast.customFailureToast(requireContext(),"Email Already Registered")
-
                                         break
+
                                     } else {
                                         authValid = true
-
-
                                     }
                                 }
                             }
+
                             if(isValidEmail(registEmail)){
                                 if(authValid){
                                     regisUser(name, registEmail, password, selectedAccountType)
                                 }
-                            }else{
+
+                            } else{
                                 val customToast = CustomToast()
                                 customToast.customFailureToast(requireContext(),"Email Not Valid")
-
-
                             }
-
 
                         } else {
                             val customToast = CustomToast()
                             customToast.customFailureToast(requireContext(),"Confirm password didn't match")
-
                         }
+
                     } else {
                         val customToast = CustomToast()
                         customToast.customFailureToast(requireContext(),"Please Fill All the Form")
-
                     }
-                }else{
+
+                } else{
                     val customToast = CustomToast()
                     customToast.customFailureToast(requireContext(),"Register Failed")
-
                 }
 
-
-            }else{
-
+            } else{
                 val customToast = CustomToast()
                 customToast.customFailureToast(requireContext(),"No Internet Connection")
-
-
             }
-
-
         }
 
         binding.dropdownAccountType.setOnClickListener {
@@ -155,13 +142,10 @@ class RegisterFragment : Fragment() {
             binding.regisPassword.clearFocus()
             binding.regisEmail.clearFocus()
             it.hideKeyboard()
-
         }
-
     }
 
     fun checkNetwork(){
-
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
                 isConnect = true
@@ -174,35 +158,25 @@ class RegisterFragment : Fragment() {
         }
 
     }
+
     fun getDataUser(){
         viewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
         viewModel.getAllUserObserver.observe(viewLifecycleOwner) {
             viewModel.getAllUserResponseCode.observe(viewLifecycleOwner){code->
-
-
                 if(code=="200"){
 
                     dataUser = it!!
                     isDataObtained = true
                 }
-
-
             }
-
-
         }
-
         viewModel.getAllUser()
-
     }
 
-    @SuppressLint("SuspiciousIndentation")
     fun regisUser(name: String, email: String, password: String, accountType:String) {
         viewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-
                 viewModel.registerObserver.observe(viewLifecycleOwner) {
                     viewModel.registerResponseCode.observe(viewLifecycleOwner){code->
-
                         if (code ==  "201") {
                             val customToast = CustomToast()
                             customToast.customSuccessToast(requireContext(),"Register Succesful")
@@ -217,13 +191,8 @@ class RegisterFragment : Fragment() {
                     }
 
                 }
-
                 val balance = 0
                 viewModel.register(name, email, password, accountType, balance )
-
-
-
-
     }
 
     fun setUpDropDownAccount(){
@@ -236,13 +205,9 @@ class RegisterFragment : Fragment() {
             val selectedItem: String? = arrayAdapter.getItem(position)
             selectedAccountType = selectedItem!!
 
-
-
-
         }
 
     }
-
 
     fun View.hideKeyboard() {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

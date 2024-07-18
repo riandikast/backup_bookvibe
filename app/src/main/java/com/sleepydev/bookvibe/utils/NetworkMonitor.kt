@@ -12,15 +12,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@RequiresApi(Build.VERSION_CODES.N)
+
 @Singleton
 class NetworkMonitor @Inject constructor(@ApplicationContext context: Context) {
-
-
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-
     val _isConnected = MutableStateFlow(false)
     val isConnected: Flow<Boolean> = _isConnected
 

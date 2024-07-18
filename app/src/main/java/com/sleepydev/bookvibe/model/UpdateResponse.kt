@@ -4,7 +4,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 
 @Parcelize
 data class UpdateResponse(
@@ -19,4 +18,4 @@ data class UpdateResponse(
     val phone_number: String,
     @SerializedName("image")
     val image: String? = null,
-): Parcelable
+) : Parcelable

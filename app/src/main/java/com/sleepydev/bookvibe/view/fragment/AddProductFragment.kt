@@ -7,14 +7,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,14 +21,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isNotEmpty
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import com.bumptech.glide.Glide
 import com.sleepydev.bookvibe.R
 import com.sleepydev.bookvibe.databinding.FragmentAddProductBinding
-import com.sleepydev.bookvibe.databinding.FragmentProductBinding
 import com.sleepydev.bookvibe.utils.CustomToast
 import com.sleepydev.bookvibe.viewmodel.NetworkViewModel
 import com.sleepydev.bookvibe.viewmodel.ProductViewModel
@@ -47,59 +43,61 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import kotlin.properties.Delegates
 
-
 @AndroidEntryPoint
 class AddProductFragment : Fragment() {
     private var _binding: FragmentAddProductBinding? = null
     private val binding get() = _binding!!
 
-    private val  productViewModel: ProductViewModel by viewModels()
+    private val productViewModel: ProductViewModel by viewModels()
     private val networkViewModel: NetworkViewModel by viewModels()
 
     private lateinit var sizeCheck: String
-    private var typeCheck : String? = null
-    private lateinit var imageCheck : String
-    var image : MultipartBody.Part? = null
-    lateinit var imageUri : Uri
-    lateinit var sendNoImage :String
+    private var typeCheck: String? = null
+    private lateinit var imageCheck: String
+    var image: MultipartBody.Part? = null
+    lateinit var imageUri: Uri
+    lateinit var sendNoImage: String
     var toastShown = false
-    var  preventFirstLoad = true
+    var preventFirstLoad = true
     private val customToast = CustomToast()
     var isConnect = false
     var currentUserID by Delegates.notNull<Int>()
-    lateinit var currentUserNamee : String
-
-
+    lateinit var currentUserNamee: String
+    var discount = 0
+    var finalPrice = 0
 
     private lateinit var pickFileLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        _binding =  FragmentAddProductBinding.inflate(inflater, container, false)
+        _binding = FragmentAddProductBinding.inflate(inflater, container, false)
 
-        imageCheck=""
+        imageCheck = ""
         sendNoImage = "true"
 
         checkNetwork()
         formTextWatcher()
 
-        pickFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                // Tangani hasil pemilihan file
+        pickFileLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
 
-                handleFilePickResult(data)
-
+                    handleFilePickResult(data)
+                }
             }
-        }
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
-
 
         binding.btnBacktohome.setOnClickListener {
             activity?.onBackPressedDispatcher?.onBackPressed()
@@ -110,39 +108,54 @@ class AddProductFragment : Fragment() {
             val productDesc = binding.addProductDesc.text.toString()
             val productPrice = binding.addProductPrice.text.toString()
             val productStock = binding.addProductStock.text.toString()
+            val productSatuan = binding.addProductSatuan.text.toString()
+            val productDiscount= binding.addProductDiscount.text.toString()
 
-            if (isConnect){
-
-                if (binding.addProductName.text.isNotEmpty() && binding.addProductDesc.text.isNotEmpty()
-                    && binding.addProductPrice.text.isNotEmpty()
-                    && binding.addProductStock.text.isNotEmpty()
-                    && image!=null
+            if (isConnect) {
+                if (binding.addProductName.text.isNotEmpty() &&
+                    binding.addProductDesc.text.isNotEmpty() &&
+                    binding.addProductPrice.text.isNotEmpty() &&
+                    binding.addProductStock.text.isNotEmpty() &&
+                    image != null
                 ) {
+
                     val productPriceInt = productPrice.toInt()
+                    if (discount > 0){
+                        val discount = (productPrice.toInt() * productDiscount.toInt()) / 100
+                        finalPrice = productPriceInt - discount
+                    } else {
+                        finalPrice = productPriceInt
+                    }
+
                     val productStockInt = productStock.toInt()
-                    if (sendNoImage == "true"){
+                    if (sendNoImage == "true") {
                         val attachmentEmpty = "".toRequestBody("text/plain".toMediaTypeOrNull())
-                        image  =  MultipartBody.Part.createFormData(imageUri.toString(), "", attachmentEmpty)
+                        image = MultipartBody.Part.createFormData(imageUri.toString(), "", attachmentEmpty)
                         Log.d("tesblank", image.toString())
                     }
 
-                    if (isConnect){
-                        addProduct(productName, productDesc, productPriceInt!!, productStockInt!!, currentUserNamee, imageUri, currentUserID)
-
+                    if (isConnect) {
+                        addProduct(
+                            productName,
+                            productDesc,
+                            finalPrice,
+                            productStockInt!!,
+                            currentUserNamee,
+                            imageUri,
+                            currentUserID,
+                            productSatuan
+                        )
                     }
-
-                }else{
-                    if (isConnect){
+                } else {
+                    if (isConnect) {
                         val customToast = CustomToast()
-                        customToast.customFailureToast(requireContext(),"Please Fill All the Form")
+                        customToast.customFailureToast(requireContext(), "Please Fill All the Form")
                     }
                 }
-            }else{
+            } else {
                 isConnect = false
                 val customToast = CustomToast()
-                customToast.customFailureToast(requireContext(),"No Internet Connection")
-
-
+                customToast.customFailureToast(requireContext(), "No Internet Connection")
             }
         }
 
@@ -152,60 +165,83 @@ class AddProductFragment : Fragment() {
                 pickFileLauncher.launch(intent)
             }
         }
-
     }
 
-    fun formTextWatcher (){
-        binding.addProductStock.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    fun formTextWatcher() {
+        binding.addProductStock.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val value = s.toString().toIntOrNull() ?: 1
-                if (value < 1){
-                    binding.addProductStock.setText("1")
-                    binding.addProductStock.setSelection(binding.addProductStock.text.length)
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // Enable or disable the button based on whether EditText is empty
-
-            }
-        })
-
-        binding.addProductPrice.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
                     val value = s.toString().toIntOrNull() ?: 1
-                    if (value < 1){
+                    if (value < 1) {
+                        binding.addProductStock.setText("1")
+                        binding.addProductStock.setSelection(binding.addProductStock.text.length)
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+            },
+        )
+
+        binding.addProductPrice.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    val value = s.toString().toIntOrNull() ?: 1
+                    if (value < 1) {
                         binding.addProductPrice.setText("1")
                         binding.addProductPrice.setSelection(binding.addProductPrice.text.length)
                     }
-            }
-            override fun afterTextChanged(s: Editable?) {
-                // Enable or disable the button based on whether EditText is empty
-            }
-        })
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    // Enable or disable the button based on whether EditText is empty
+                }
+            },
+        )
     }
-    private fun getContent(it : Uri) {
 
+    private fun getContent(it: Uri) {
         val contentResolver = requireContext().contentResolver
-
         if (it != null) {
             val type = contentResolver.getType(it)
             imageUri = it
             binding.addProductImage.setImageURI(it)
             val getType = type.toString()
-            typeCheck = if (getType == "image/png") {
-                ".png"
-            } else if (getType == "image/jpg") {
-                ".jpg"
-            } else if (getType == "image/jpeg") {
-                ".jpeg"
-            } else {
-                null
-            }
+            typeCheck =
+                if (getType == "image/png") {
+                    ".png"
+                } else if (getType == "image/jpg") {
+                    ".jpg"
+                } else if (getType == "image/jpeg") {
+                    ".jpeg"
+                } else {
+                    null
+                }
 
             val outputDir = requireContext().cacheDir // context being the Activity pointer
             val tempFile = File.createTempFile("temp-", typeCheck, outputDir)
@@ -217,17 +253,17 @@ class AddProductFragment : Fragment() {
             val inputStream = contentResolver.openInputStream(it)
             tempFile.outputStream().use {
                 inputStream?.copyTo(it)
-
             }
 
             val requestBody: RequestBody = tempFile.asRequestBody(type?.toMediaType())
             val getImageSize = requestBody.contentLength().toDouble()
             val convertToMB = getImageSize / 1000000
-            sizeCheck = if (convertToMB > 1) {
-                ">1mb"
-            } else {
-                "<1mb"
-            }
+            sizeCheck =
+                if (convertToMB > 1) {
+                    ">1mb"
+                } else {
+                    "<1mb"
+                }
             Log.d("imagesize", convertToMB.toString())
 
             image =
@@ -236,44 +272,35 @@ class AddProductFragment : Fragment() {
             Log.d("cekk", imageCheck)
         }
     }
-    private fun handleFilePickResult(it: Intent?) {
 
+    private fun handleFilePickResult(it: Intent?) {
         it?.data.let {
             getContent(it!!)
-
         }
 
-        if (typeCheck !=null && sizeCheck=="<1mb" && it?.data!==null){
+        if (typeCheck != null && sizeCheck == "<1mb" && it?.data !== null) {
             binding.addProductImage.setImageURI(it.data)
             sendNoImage = "false"
         }
-
     }
 
-    fun checkNetwork(){
+    fun checkNetwork() {
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
-            if (isOnline){
+            if (isOnline) {
                 isConnect = true
                 preventFirstLoad = false
                 getUserData()
-
-            }else{
+            } else {
                 isConnect = false
                 toastShown = false
                 currentUserID = 0
-
-
             }
         }
-
     }
 
 
-
-    @SuppressLint("SuspiciousIndentation")
     fun getUserData() {
         val userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
-
         userViewModel.userID(requireContext()).observe(viewLifecycleOwner) {
             currentUserID = it
             userViewModel.getCurrentUser(it)
@@ -282,67 +309,76 @@ class AddProductFragment : Fragment() {
         userViewModel.currentUserObserver.observe(viewLifecycleOwner) {
             currentUserNamee = it.name
         }
-
     }
 
-    fun addProduct(name: String, desc:String, price:Int, stock:Int, sellerName:String, image: @RawValue Any? = null, sellerID: Int) {
-
+    fun addProduct(
+        name: String,
+        desc: String,
+        price: Int,
+        stock: Int,
+        sellerName: String,
+        image: @RawValue Any? = null,
+        sellerID: Int,
+        satuan: String
+    ) {
         productViewModel.addProductObserver.observe(viewLifecycleOwner) {
-            productViewModel.addProductResponseCode.observe(viewLifecycleOwner){code->
-                if (code ==  "201") {
+            productViewModel.addProductResponseCode.observe(viewLifecycleOwner) { code ->
+                if (code == "201") {
                     val customToast = CustomToast()
-                    customToast.customSuccessToast(requireContext(),"Product Posted")
+                    customToast.customSuccessToast(requireContext(), "Product Posted")
 
-                    view?.findNavController()
-                        ?.navigate(R.id.action_addProductFragment_to_productFragment, null,
-                            NavOptions.Builder()
+                    view
+                        ?.findNavController()
+                        ?.navigate(
+                            R.id.action_addProductFragment_to_productFragment,
+                            null,
+                            NavOptions
+                                .Builder()
                                 .setPopUpTo(
-                                    R.id.productFragment ,
-                                    true
-                                ).build())
-
+                                    R.id.productFragment,
+                                    true,
+                                ).build(),
+                        )
                 } else {
                     val customToast = CustomToast()
-                    customToast.customFailureToast(requireContext(),"Cannot Post Product")
-
+                    customToast.customFailureToast(requireContext(), "Cannot Post Product")
                 }
             }
         }
 
-        productViewModel.addProduct(name, desc, price, stock, sellerName, image.toString(), sellerID )
-
-
-
-
+        productViewModel.addProduct(name, desc, price, stock, sellerName, image.toString(), satuan, sellerID, )
     }
 
-
-    private fun isPermissionsAllowed(): Boolean {
-        return ContextCompat.checkSelfPermission(requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    }
+    private fun isPermissionsAllowed(): Boolean =
+        ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+        ) == PackageManager.PERMISSION_GRANTED
 
     private fun askForPermissions(): Boolean {
         if (!isPermissionsAllowed()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 showPermissionDeniedDialog()
             } else {
-                ActivityCompat.requestPermissions(requireActivity(),arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),2000)
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2000)
             }
             return false
         }
         return true
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
         when (requestCode) {
             2000 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission is granted, you can perform your operation here
+
                 } else {
-                    // permission is denied, you can ask for permission again, if you want
-                    //  askForPermissions()
+
                 }
                 return
             }
@@ -350,20 +386,20 @@ class AddProductFragment : Fragment() {
     }
 
     private fun showPermissionDeniedDialog() {
-        AlertDialog.Builder(requireContext())
+        AlertDialog
+            .Builder(requireContext())
             .setTitle("Permission Denied")
             .setMessage("Permission is denied, Please allow permissions from App Settings.")
-            .setPositiveButton("App Settings"
+            .setPositiveButton(
+                "App Settings",
             ) { dialogInterface, i ->
-                // send to app settings if permission is denied permanently
+
                 val intent = Intent()
                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                val uri = Uri.fromParts("package", "and5.finalproject.secondhand5", null)
+                val uri = Uri.fromParts("package", "com.sleepydev.bookvibe", null)
                 intent.data = uri
                 startActivity(intent)
-            }
-            .setNegativeButton("Cancel",null)
+            }.setNegativeButton("Cancel", null)
             .show()
     }
-
 }

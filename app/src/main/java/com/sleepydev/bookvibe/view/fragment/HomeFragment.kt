@@ -65,6 +65,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         checkNetwork()
         preventFirstLoad = false
+        binding.appName.setOnClickListener {
+            view.findNavController().navigate(R.id.loginFragment)
+        }
 
     }
 
@@ -80,6 +83,7 @@ class HomeFragment : Fragment() {
                 toastShown = false
                 binding.progressBar.visibility = View.VISIBLE
                 binding.contentPage.visibility = View.INVISIBLE
+                binding.checkdata.visibility = View.INVISIBLE
 
                 if (!preventFirstLoad){
 

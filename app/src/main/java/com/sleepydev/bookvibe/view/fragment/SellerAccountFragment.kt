@@ -90,8 +90,6 @@ class SellerAccountFragment : Fragment() {
         checkNetwork()
         initTopupDialog()
 
-
-
         binding.editProfileCard.setOnClickListener{
             view.findNavController().navigate(
                 R.id.action_sellerAccountFragment_to_editProfileFragment
@@ -105,7 +103,7 @@ class SellerAccountFragment : Fragment() {
         }
 
         binding.productProfileCard.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.action_sellerAccountFragment_to_productFragment)
+            view.findNavController().navigate(R.id.action_sellerAccountFragment_to_productFragment)
         }
 
         binding.logoutCard.setOnClickListener {
@@ -114,7 +112,6 @@ class SellerAccountFragment : Fragment() {
                 title = "Confirm Action",
                 message = "Are you sure you want to Logout?",
                 onPositiveAction = {
-
                     userManager = UserManager(requireContext())
                     Navigation.findNavController(view).navigate(R.id.homeFragment)
                     GlobalScope.launch {
@@ -124,15 +121,12 @@ class SellerAccountFragment : Fragment() {
                 },
                 onNegativeAction = {
 
-
                 }
             )
         }
 
         binding.btnTopup.setOnClickListener {
             toastShown = false
-
-
             inputBinding.currentBalance.text = currentUserBalance
             inputBinding.textInputBalance.prefixTextView.gravity = Gravity.TOP
             inputBinding.textInputBalance.prefixTextView.textSize = 20F
@@ -142,7 +136,6 @@ class SellerAccountFragment : Fragment() {
     }
 
     fun checkNetwork(){
-
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
                 handler?.removeCallbacks(toastRunnable!!)
@@ -167,7 +160,7 @@ class SellerAccountFragment : Fragment() {
                     }
 
                     handler?.postDelayed(toastRunnable!!, 4000)
-                }else{
+                } else{
                     preventFirstLoad = false
                 }
             }
@@ -176,10 +169,10 @@ class SellerAccountFragment : Fragment() {
     }
 
     fun initTopupDialog(){
-
         inputBinding = TopupDialogBinding.inflate(
             LayoutInflater.from(requireContext())
         )
+
         val inputView = inputBinding.root
         topUpDialog = AlertDialog.Builder(requireContext())
             .setView(inputView)
@@ -242,7 +235,6 @@ class SellerAccountFragment : Fragment() {
                         val rawValueToString = it.image.toString()
                         val regex = """name="(content://[^\"]+)"""".toRegex()
 
-                        // Ekstraksi content URI menggunakan regex
                         val matchResult = regex.find(rawValueToString)
 
                         val contentUri = matchResult?.groups?.get(1)?.value

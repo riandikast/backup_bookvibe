@@ -77,6 +77,69 @@
                 android:layout_marginStart="60dp"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/poppins_medium"
+                android:text="Satuan"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                app:helperTextTextColor="@color/red"
+                android:id="@+id/field_product_satuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="60dp">
+
+                <EditText
+                    android:id="@+id/add_product_satuan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/rectangle_edit_text"
+                    android:hint="Name"
+                    android:textSize="16sp" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Product Discount"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_product_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="60dp"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                app:helperTextTextColor="@color/red">
+
+                <EditText
+                    android:maxLength="9"
+                    android:inputType="number"
+                    android:id="@+id/add_product_discount"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/rectangle_edit_text"
+                    android:hint="Example : 50000"
+                    android:textSize="16sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins_medium"
                 android:text="Product Price"
                 android:textColor="@color/black"
                 android:textSize="18sp" />

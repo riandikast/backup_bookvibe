@@ -189,7 +189,7 @@ class BuyerAccountFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                // Enable or disable the button based on whether EditText is empty
+
                 inputBinding.btnTopup.isEnabled = !s.isNullOrEmpty()
                 if (!s.isNullOrEmpty()){
                     inputBinding.btnTopup.alpha = 1F

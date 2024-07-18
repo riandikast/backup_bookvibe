@@ -66,17 +66,17 @@ class ReportFragment : Fragment() {
         binding.btnBackProfile.setOnClickListener {
             activity?.onBackPressedDispatcher?.onBackPressed()
         }
-
     }
 
     fun checkNetwork(){
         networkViewModel.isOnline.observe(viewLifecycleOwner) { isOnline ->
             if (isOnline){
+
                 handler?.removeCallbacks(toastRunnable!!)
                 preventFirstLoad = false
                 getMyProduct()
 
-            }else{
+            } else{
                 toastShown = false
                 binding.progressBar.visibility = View.VISIBLE
                 binding.contentPage.visibility = View.INVISIBLE
@@ -86,20 +86,20 @@ class ReportFragment : Fragment() {
                     toastRunnable = Runnable {
                         customToast.customFailureToast(requireContext(), "No Internet Connection")
                     }
-
                     handler?.postDelayed(toastRunnable!!, 4000)
-                }else{
+
+                } else{
                     preventFirstLoad = false
                 }
             }
         }
-
     }
 
     fun getMyProduct(){
         usertViewModel.userID(requireContext()).observe(viewLifecycleOwner){
             currentSeller = it
         }
+
         inventoryValuation = 0
         productViewModel.getAllProductObserver.observe(viewLifecycleOwner){product->
             productViewModel.getAllProductResponseCode.observe(viewLifecycleOwner){code->
@@ -137,15 +137,11 @@ class ReportFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     binding.contentPage.visibility = View.VISIBLE
 
-                }else{
+                } else{
 
                 }
             }
         }
         productViewModel.getAllProduct()
-
-
     }
-
-
 }

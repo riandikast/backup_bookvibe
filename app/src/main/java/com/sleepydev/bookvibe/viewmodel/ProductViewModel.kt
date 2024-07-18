@@ -43,9 +43,9 @@ class ProductViewModel @Inject constructor (val productRepository: ProductReposi
     var soldProductObserver: SingleLiveEvent<Product> = SingleLiveEvent()
     var soldProductResponseCode: SingleLiveEvent<String> = SingleLiveEvent()
 
-    fun addProduct(name: String, desc:String, price:Int, stock:Int, sellerName:String, image: @RawValue Any? = null, sellerID: Int ){
+    fun addProduct(name: String, desc:String, price:Int, stock:Int, sellerName:String, image: @RawValue Any? = null, satuan:String, sellerID: Int ){
         viewModelScope.launch {
-            productRepository.addProduct(name, desc, price, stock, sellerName, image, sellerID, 0, 0, addProductObserver, addProductResponseCode)
+            productRepository.addProduct(name, desc, price, stock, sellerName, image, sellerID, 0, 0,satuan, addProductObserver, addProductResponseCode, )
         }
 
     }

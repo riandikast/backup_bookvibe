@@ -31,4 +31,6 @@ data class Product(
     val soldCount: Int,
     @SerializedName("revenue")
     val revenue: Int,
+    @SerializedName("satuan")
+    val satuan: String,
     ):Parcelable

@@ -64,7 +64,6 @@ class TransactionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         checkNetwork()
-
     }
 
     fun checkNetwork(){
@@ -95,21 +94,17 @@ class TransactionFragment : Fragment() {
         }
 
     }
-    @SuppressLint("SuspiciousIndentation")
+
     fun getMyTransaction(){
         userViewModel.userID(requireContext()).observe(viewLifecycleOwner){
-          currentUserID = it
+            currentUserID = it
             userViewModel.getCurrentUser(currentUserID)
             userViewModel.currentUserObserver.observe(viewLifecycleOwner){user->
                 userViewModel.currentUserResponseCode.observe(viewLifecycleOwner){code->
                     if (code == "200"){
                         binding.list.layoutManager =
                             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-
                         val sorted = user.history.sortedByDescending { it.time }
-
-
                         myTransactionAdapter = TransactionAdapter( this)
                         myTransactionAdapter.setProductList(sorted)
                         binding.list.adapter = myTransactionAdapter
@@ -131,9 +126,5 @@ class TransactionFragment : Fragment() {
                 }
             }
         }
-
-
-
-
     }
 }
